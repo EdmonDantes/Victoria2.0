@@ -1,3 +1,9 @@
+/*******************************************************************************
+ *
+ * Copyright © (c). 2020. Loginov Ilya Vladislavovich. All Rights Reserved.
+ *
+ *******************************************************************************/
+
 package ru.liveproduction.victoria.core.exception;
 
 public class VictoriaException extends RuntimeException {

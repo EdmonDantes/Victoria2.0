@@ -6,23 +6,15 @@
 
 package ru.liveproduction.victoria.core.entity.money;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
 
-/**
- * Interface for money type
- * @param <ID>
- */
-public interface IMoney<ID> {
+public interface IPrice<ID> {
 
     @Nullable
     ID getId();
 
-    @NotNull
-    String getTag();
+    boolean isSupportMoney(IMoney<ID> money);
 
-    @Nullable
-    ILocalizationString<ID> getName();
+    double getPriceForMoney(IMoney<ID> money);
 
 }
