@@ -20,7 +20,6 @@ import ru.liveproduction.victoria.core.entity.localization.repostiory.StoredLoca
 import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 import ru.liveproduction.victoria.core.exception.VictoriaException;
 
-import javax.transaction.Transactional;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -59,7 +58,6 @@ public class Test1 {
     public LocalizationStringRepository localizationStringRepository;
 
     @Test
-    @Transactional
     public void testLocalizationString() {
         var ruLocale = storedLocaleRepository.getByJavaLanguageTagIgnoreCase("RU");
         if (ruLocale.isEmpty()) {
@@ -78,7 +76,8 @@ public class Test1 {
         }
 
         System.out.println(stringId);
-        System.out.println(localizationStringRepository.getOne(stringId).getLocaleString(ruLocale.get()));
-        System.out.println(localizationStringRepository.getOne(stringId).getLocaleString(engLocale.get()));
+        LocalizationString one = localizationStringRepository.getOne(stringId);
+        System.out.println(one.getLocaleString(ruLocale.get()));
+        System.out.println(one.getLocaleString(engLocale.get()));
     }
 }
