@@ -73,4 +73,17 @@ public class LocalizationString implements ILocalizationString<Integer> {
     public @Nullable String getLocaleString(@NotNull IStoredLocale locale) {
         return localizationString.get(locale);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof LocalizationString) {
+            return localizationString.equals(((LocalizationString) obj).localizationString);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return localizationString.hashCode();
+    }
 }

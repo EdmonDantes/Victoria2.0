@@ -54,4 +54,9 @@ public class StoredLocale implements IStoredLocale<Integer> {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return javaLanguageTag.hashCode();
+    }
 }

@@ -11,26 +11,31 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import ru.liveproduction.victoria.core.annotation.Singleton;
 import ru.liveproduction.victoria.core.entity.localization.impl.StoredLocale;
+import ru.liveproduction.victoria.core.entity.localization.manager.IStoredLocaleManager;
+import ru.liveproduction.victoria.core.entity.localization.manager.impl.StoredLocaleManager;
 import ru.liveproduction.victoria.core.entity.localization.repostiory.StoredLocaleRepository;
 
+import java.util.Comparator;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Singleton("init-class")
 public class InitClass implements ApplicationListener<ContextRefreshedEvent> {
 
-    private StoredLocaleRepository storedLocaleRepository;
+    private IStoredLocaleManager storedLocaleManager;
 
     @Autowired
-    public InitClass(StoredLocaleRepository storedLocaleRepository) {
-        this.storedLocaleRepository = storedLocaleRepository;
+    public InitClass(IStoredLocaleManager storedLocaleManager) {
+        this.storedLocaleManager = storedLocaleManager;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        for (Locale locale : Locale.getAvailableLocales()) {
-            if (storedLocaleRepository.getByJavaLanguageTagIgnoreCase(locale.toLanguageTag()).isEmpty()) {
-                storedLocaleRepository.save(new StoredLocale(locale.toLanguageTag()));
-            }
-        }
+        Stream.of(Locale.getAvailableLocales()).map(Locale::toLanguageTag).sorted(String::compareTo).forEach(langTag -> {
+            storedLocaleManager.save(new StoredLocale(langTag));
+        });
+
+        storedLocaleManager.getUsingLocales("ru-RU").stream().map(StoredLocale::getId).filter(Objects::nonNull).sorted(Integer::compareTo).forEach(System.out::println);
     }
 }

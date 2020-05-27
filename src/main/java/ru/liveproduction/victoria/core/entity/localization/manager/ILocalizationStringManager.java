@@ -20,8 +20,8 @@ import java.util.Map;
 @Transactional
 public interface ILocalizationStringManager<ID> {
 
-    ILocalizationString<ID> save(Map<? extends StoredLocale, String> localizationString);
-    ILocalizationString<ID> save(Object ...args);
+    ILocalizationString<ID> save(Map<String, String> localizationString);
+    ILocalizationString<ID> save(String ...args);
 
     String getLocaleString(ILocalizationString<ID> string, StoredLocale storedLocale);
 
