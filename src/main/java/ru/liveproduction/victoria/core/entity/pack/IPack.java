@@ -8,31 +8,30 @@ package ru.liveproduction.victoria.core.entity.pack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
-import ru.liveproduction.victoria.core.entity.money.IPrice;
-import ru.liveproduction.victoria.core.entity.questions.IQuestion;
+import ru.liveproduction.victoria.core.entity.IdOwner;
+import ru.liveproduction.victoria.core.entity.category.impl.Category;
+import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationString;
+import ru.liveproduction.victoria.core.entity.money.impl.Price;
+import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 
+import javax.validation.constraints.NegativeOrZero;
 import java.util.List;
 
-public interface IPack<ID> {
-
-    @Nullable
-    ID getId();
+public interface IPack<ID> extends IdOwner<ID> {
 
     @NotNull
-    ILocalizationString<ID> getName();
-
-    @Nullable
-    ILocalizationString<ID> getDescription();
-
-    int getCountQuestions();
+    List<Question> getAllQuestions();
 
     @NotNull
-    List<? extends IQuestion> getAllQuestions();
-
-    @NotNull
-    List<? extends IQuestion> getRandomQuestions(int count);
+    LocalizationString getName();
 
     @Nullable
-    IPrice<ID> getPrice();
+    LocalizationString getDescription();
+
+    @Nullable
+    Price getPrice();
+
+    @NotNull
+    List<Category> getCategories();
+
 }

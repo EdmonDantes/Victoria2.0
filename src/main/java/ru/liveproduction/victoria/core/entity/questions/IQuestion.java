@@ -6,18 +6,33 @@
 
 package ru.liveproduction.victoria.core.entity.questions;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import ru.liveproduction.victoria.core.entity.IdOwner;
+import ru.liveproduction.victoria.core.entity.category.ICategory;
+import ru.liveproduction.victoria.core.entity.category.impl.Category;
 import ru.liveproduction.victoria.core.entity.difficult.ICompareDifficult;
+import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
 import ru.liveproduction.victoria.core.entity.localization.IStoredLocale;
+import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationString;
 import ru.liveproduction.victoria.core.exception.VictoriaException;
 
+import java.util.List;
+
 @Component
-public interface IQuestion {
+public interface IQuestion<ID> extends IdOwner<ID> {
 
-    String getQuestionString(IStoredLocale locale);
+    @NotNull
+    LocalizationString getQuestion();
 
-    boolean checkAnswer(IStoredLocale locale, ICompareDifficult difficult, String answer) throws VictoriaException;
+    @NotNull
+    LocalizationString getAnswer();
 
-   Iterable<? extends IStoredLocale> getSupportLocales();
+    @NotNull
+    Iterable<? extends IStoredLocale<?>> getSupportLocales();
 
+    @NotNull
+    Category getCategory();
+
+    int getPoints();
 }

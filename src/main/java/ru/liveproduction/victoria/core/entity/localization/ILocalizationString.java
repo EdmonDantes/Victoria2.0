@@ -36,7 +36,7 @@ public interface ILocalizationString<ID> {
      * @return all supports locales
      */
     @NotNull
-    Set<? extends IStoredLocale> getSupportLocale();
+    Set<? extends IStoredLocale<?>> getSupportLocale();
 
     /**
      * @param locale

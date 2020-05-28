@@ -44,13 +44,13 @@ public class LocalizationString implements ILocalizationString<Integer> {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "localization_string_generator")
     @GenericGenerator(name = "localization_string_generator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
     private Integer id;
 
     @ElementCollection
     @CollectionTable
-    @MapKeyColumn
+    @MapKeyColumn(updatable = false)
     private Map<StoredLocale, String> localizationString = new HashMap<>();
 
     @Nullable
@@ -65,7 +65,7 @@ public class LocalizationString implements ILocalizationString<Integer> {
     }
 
     @Override
-    public @NotNull Set<? extends IStoredLocale> getSupportLocale() {
+    public @NotNull Set<? extends IStoredLocale<?>> getSupportLocale() {
         return localizationString.keySet();
     }
 
@@ -75,15 +75,20 @@ public class LocalizationString implements ILocalizationString<Integer> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof LocalizationString) {
-            return localizationString.equals(((LocalizationString) obj).localizationString);
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocalizationString string = (LocalizationString) o;
+
+        if (id != null ? !id.equals(string.id) : string.id != null) return false;
+        return localizationString.equals(string.localizationString);
     }
 
     @Override
     public int hashCode() {
-        return localizationString.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + localizationString.hashCode();
+        return result;
     }
 }

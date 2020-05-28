@@ -53,12 +53,29 @@ public class StoredLocaleManager implements IStoredLocaleManager {
     }
 
     @Override
+    @Nullable
+    public StoredLocale getStoredLocaleFrom(@NotNull String languageTag) {
+        return storedLocaleRepository.getByJavaLanguageTagIgnoreCase(languageTag).orElse(null);
+    }
+
+    @Override
+    @Nullable
     public StoredLocale save(StoredLocale locale) {
         if (storedLocaleRepository.getByJavaLanguageTagIgnoreCase(locale.getJavaLanguageTag()).isEmpty()) {
-            var saved = storedLocaleRepository.save(locale);
-            addUsingLocale(saved);
-            return saved;
+            try {
+                var saved = storedLocaleRepository.save(locale);
+
+                addUsingLocale(saved);
+                return saved;
+            } catch (Exception e) {
+                throw new RuntimeException("Can not save stored locale with language tag: " + locale.getJavaLanguageTag(), e);
+            }
         }
         return null;
+    }
+
+    @Override
+    public @NotNull Iterable<StoredLocale> getAllStoredLocales() {
+        return storedLocaleRepository.findAll();
     }
 }

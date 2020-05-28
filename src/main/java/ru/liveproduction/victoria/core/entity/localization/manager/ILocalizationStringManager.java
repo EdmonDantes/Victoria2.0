@@ -6,8 +6,11 @@
 
 package ru.liveproduction.victoria.core.entity.localization.manager;
 
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import ru.liveproduction.victoria.core.annotation.Singleton;
 import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
+import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationString;
 import ru.liveproduction.victoria.core.entity.localization.impl.StoredLocale;
 
 import javax.transaction.Transactional;
@@ -16,13 +19,23 @@ import java.util.Map;
 /**
  * Manager for {@link ILocalizationString}. For lazy loading and other complex operations.
  */
-@Component
 @Transactional
-public interface ILocalizationStringManager<ID> {
+@Singleton("localization-string-manager")
+public interface ILocalizationStringManager {
 
-    ILocalizationString<ID> save(Map<String, String> localizationString);
-    ILocalizationString<ID> save(String ...args);
+    @Nullable
+    LocalizationString save(@NotNull LocalizationString localizationString);
 
-    String getLocaleString(ILocalizationString<ID> string, StoredLocale storedLocale);
+    @Nullable
+    LocalizationString save(@NotNull Map<String, String> localizationString);
 
+    @Nullable
+    LocalizationString save(@NotNull String ...args);
+
+    @Nullable
+    @Transactional
+    String getLocaleString(@NotNull ILocalizationString<?> string, @NotNull StoredLocale storedLocale);
+
+    @Nullable
+    String getLocaleString(@NotNull ILocalizationString<?> string, @NotNull String languageTag);
 }

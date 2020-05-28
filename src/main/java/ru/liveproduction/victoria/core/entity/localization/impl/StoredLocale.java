@@ -29,11 +29,11 @@ public class StoredLocale implements IStoredLocale<Integer> {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "locale_generator")
     @GenericGenerator(name = "locale_generator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false, length = 34)
     private String javaLanguageTag = "";
 
     @Override
@@ -48,11 +48,13 @@ public class StoredLocale implements IStoredLocale<Integer> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IStoredLocale) {
-            return id.equals(((IStoredLocale) obj).getId()) || javaLanguageTag.equals(((IStoredLocale) obj).getJavaLanguageTag());
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StoredLocale that = (StoredLocale) o;
+
+        return javaLanguageTag.equals(that.javaLanguageTag);
     }
 
     @Override

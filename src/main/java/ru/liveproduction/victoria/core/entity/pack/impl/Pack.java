@@ -6,8 +6,10 @@
 
 package ru.liveproduction.victoria.core.entity.pack.impl;
 
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.liveproduction.victoria.core.entity.category.impl.Category;
 import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
 import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationString;
 import ru.liveproduction.victoria.core.entity.money.IPrice;
@@ -16,7 +18,9 @@ import ru.liveproduction.victoria.core.entity.pack.IPack;
 import ru.liveproduction.victoria.core.entity.questions.IQuestion;
 import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
+@Data
 public class Pack implements IPack<Integer> {
 
     @Id
@@ -39,17 +44,20 @@ public class Pack implements IPack<Integer> {
     @SequenceGenerator(name = "pack_generator")
     private Integer id;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private LocalizationString name;
 
-    @OneToOne
+    @OneToOne(optional = true, orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private LocalizationString description;
 
-    @ManyToMany
-    private List<Question> questions = new ArrayList<>();
-
-    @OneToOne
+    @OneToOne(optional = true, orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Price price;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    private List<Category> categories = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private List<Question> questions = new ArrayList<>();
 
     @Nullable
     @Override
@@ -58,43 +66,47 @@ public class Pack implements IPack<Integer> {
     }
 
     @Override
-    public @NotNull ILocalizationString<Integer> getName() {
-        return name;
-    }
-
-    @Override
-    public @Nullable ILocalizationString<Integer> getDescription() {
-        return description;
-    }
-
-    @Override
-    public int getCountQuestions() {
-        return questions.size();
-    }
-
-    @Override
-    public @NotNull List<? extends IQuestion> getAllQuestions() {
+    public @NotNull List<Question> getAllQuestions() {
         return questions;
     }
 
     @Override
-    public @NotNull List<? extends IQuestion> getRandomQuestions(int count) {
-        if (count < 1 || count > questions.size()) {
-            return Collections.emptyList();
-        }
-
-        Set<Integer> result = new HashSet<>();
-        SecureRandom random = new SecureRandom();
-
-        while (result.size() < count) {
-            result.add(random.nextInt(questions.size()));
-        }
-
-        return result.stream().map(index -> questions.get(index)).collect(Collectors.toList());
+    public @NotNull LocalizationString getName() {
+        return name;
     }
 
     @Override
-    public @Nullable IPrice<Integer> getPrice() {
+    public @Nullable LocalizationString getDescription() {
+        return description;
+    }
+
+    @Override
+    public @Nullable Price getPrice() {
         return price;
+    }
+
+    @Override
+    public @NotNull List<Category> getCategories() {
+        return categories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pack pack = (Pack) o;
+
+        if (id != null ? !id.equals(pack.id) : pack.id != null) return false;
+        if (!categories.equals(pack.categories)) return false;
+        return questions.equals(pack.questions);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + categories.hashCode();
+        result = 31 * result + questions.hashCode();
+        return result;
     }
 }

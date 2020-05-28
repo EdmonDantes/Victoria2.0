@@ -18,7 +18,6 @@ import java.util.Optional;
  * Class for manage {@link StoredLocale} repository.
  */
 @Repository
-@Component
 public interface StoredLocaleRepository extends JpaRepository<StoredLocale, Integer> {
 
     @NotNull
