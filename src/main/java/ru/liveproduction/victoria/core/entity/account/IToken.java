@@ -4,12 +4,16 @@
 
 package ru.liveproduction.victoria.core.entity.account;
 
+import org.jetbrains.annotations.NotNull;
+import ru.liveproduction.victoria.core.entity.IdOwner;
 import ru.liveproduction.victoria.core.entity.account.impl.Account;
 
-public interface IToken {
+public interface IToken extends IdOwner<String> {
 
+    @NotNull
     Account getAccount();
 
+    @NotNull
     String getToken();
 
 }

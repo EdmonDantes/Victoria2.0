@@ -4,6 +4,7 @@
 
 package ru.liveproduction.victoria.core.entity.pack.manager.impl;
 
+import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,11 @@ public class PackManager implements IPackManager {
     @Override
     @Transactional
     public @NotNull Map<Category, List<Question>> getAllQuestions(@NotNull Pack pack) {
+
+        if (!Hibernate.isInitialized(pack)) {
+            Hibernate.initialize(pack);
+        }
+
         Map<Category, List<Question>> result = new HashMap<>();
         for (Question question : pack.getAllQuestions()) {
             result.computeIfAbsent(question.getCategory(), key -> new ArrayList<>()).add(question);
@@ -116,8 +122,12 @@ public class PackManager implements IPackManager {
 
         for (Category category : result.keySet()){
             List<Question> questions = allQuestions.get(category);
-            while (result.get(category).size() < countQuestions) {
-                result.get(category).add(questions.get(secureRandom.nextInt(questions.size())));
+            if (countQuestions >= questions.size()) {
+                result.get(category).addAll(questions);
+            } else {
+                while (result.get(category).size() < countQuestions) {
+                    result.get(category).add(questions.get(secureRandom.nextInt(questions.size())));
+                }
             }
         }
 

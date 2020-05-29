@@ -26,6 +26,7 @@ public interface IPackManager {
     boolean addQuestion(@NotNull Pack pack, @NotNull Question question);
 
     @NotNull
+    @Transactional
     Map<Category, List<Question>> getAllQuestions(@NotNull Pack pack);
 
     @NotNull

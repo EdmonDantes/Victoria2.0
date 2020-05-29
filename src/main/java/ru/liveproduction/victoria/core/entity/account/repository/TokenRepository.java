@@ -13,8 +13,5 @@ import java.util.List;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, String> {
-
-    List<Token> getAllByAccount_Id(Integer id);
     List<Token> getAllByAccount(Account account);
-
 }

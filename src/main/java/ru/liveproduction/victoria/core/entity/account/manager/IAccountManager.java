@@ -11,7 +11,6 @@ import ru.liveproduction.victoria.core.entity.account.impl.Account;
 import ru.liveproduction.victoria.core.entity.account.impl.Token;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.NegativeOrZero;
 
 @Transactional
 @Singleton("account-manager")
@@ -21,8 +20,17 @@ public interface IAccountManager {
     Account save(@NotNull Account account);
 
     @Nullable
+    Token login(@NotNull String login, @NotNull String password);
+
+    @Nullable
     Account addToken(@NotNull Account account, @NotNull Token token);
 
     @Nullable
     Account getFromToken(@NotNull String token);
+
+    @Nullable
+    Account getFromLogin(@NotNull String login);
+
+    @Nullable
+    Account addPoints(@NotNull Account account, @NotNull Integer points);
 }

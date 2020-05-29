@@ -8,11 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.liveproduction.victoria.core.entity.account.impl.Account;
 
-import java.util.Optional;
-
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Integer> {
-
-    Optional<Account> getByLoginIgnoreCase(String login);
-
-}
+public interface AccountRepository extends JpaRepository<Account, String> {}

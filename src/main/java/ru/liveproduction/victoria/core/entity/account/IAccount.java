@@ -4,15 +4,23 @@
 
 package ru.liveproduction.victoria.core.entity.account;
 
+import org.jetbrains.annotations.NotNull;
 import ru.liveproduction.victoria.core.entity.IdOwner;
+import ru.liveproduction.victoria.core.entity.account.impl.Token;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IAccount<ID> extends IdOwner<ID> {
 
+    @NotNull
     String getLogin();
+
+    @NotNull
     String getPassword();
 
-    List<String> getTokens();
+    @NotNull
+    Set<Token> getTokens();
+
+    int getScope();
 
 }

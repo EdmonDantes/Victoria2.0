@@ -5,6 +5,7 @@
 package ru.liveproduction.victoria.core.entity.account.impl;
 
 import lombok.Data;
+import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.account.IToken;
 
 import javax.persistence.CascadeType;
@@ -17,10 +18,22 @@ import javax.persistence.ManyToOne;
 @Data
 public class Token implements IToken {
 
+    public Token() {}
+
+    public Token(String token) {
+        this.token = token;
+    }
+
     @Id
     private String token;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private Account account;
 
+
+    @Nullable
+    @Override
+    public String getId() {
+        return token;
+    }
 }

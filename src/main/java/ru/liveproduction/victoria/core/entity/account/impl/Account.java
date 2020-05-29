@@ -5,39 +5,45 @@
 package ru.liveproduction.victoria.core.entity.account.impl;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.account.IAccount;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
-public class Account implements IAccount<Integer> {
+public class Account implements IAccount<String> {
+
+    public Account() {}
+
+    public Account(String login, String password) {
+        this.login = login.toLowerCase();
+        this.viewName = login;
+        this.password = password;
+    }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_generator")
-    @GenericGenerator(name = "account_generator", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
-    private Integer id;
-
     @Column(unique = true, length = 80, nullable = false)
     private String login;
+
+    @Column(unique = true, length = 80, nullable = false)
+    private String viewName;
 
     @Column(nullable = false)
     private String password;
 
     @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY,mappedBy = "account")
     Set<Token> tokens = new HashSet<>();
+
+    @Column(nullable = false)
+    private int scope = 0;
 
     @Override
     public boolean equals(Object o) {
@@ -46,14 +52,17 @@ public class Account implements IAccount<Integer> {
 
         Account account = (Account) o;
 
-        if (id != null ? !id.equals(account.id) : account.id != null) return false;
         return login.equals(account.login);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + login.hashCode();
-        return result;
+        return login.hashCode();
+    }
+
+    @Nullable
+    @Override
+    public String getId() {
+        return login;
     }
 }
