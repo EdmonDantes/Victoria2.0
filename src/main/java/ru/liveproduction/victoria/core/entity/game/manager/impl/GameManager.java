@@ -19,7 +19,6 @@ import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton("game-manager")
@@ -32,9 +31,17 @@ public class GameManager implements IGameManager {
     private final Map<String, Integer> playingInGame = new ConcurrentHashMap<>();
 
     @Autowired
-    public GameManager(GameRepository gameRepository, IGameStateManager gameStateManager, IPackManager packManager) {
+    public void setGameRepository(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
+    }
+
+    @Autowired
+    public void setGameStateManager(IGameStateManager gameStateManager) {
         this.gameStateManager = gameStateManager;
+    }
+
+    @Autowired
+    public void setPackManager(IPackManager packManager) {
         this.packManager = packManager;
     }
 
@@ -85,6 +92,7 @@ public class GameManager implements IGameManager {
 
     @Override
     public @Nullable Game startGame(@NotNull Game game) {
+        game.setStartTime(System.currentTimeMillis());
         gameStateManager.startGame(game);
         return game;
     }

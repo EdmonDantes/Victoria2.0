@@ -29,9 +29,6 @@ public interface IQuestion<ID> extends IdOwner<ID> {
     LocalizationString getAnswer();
 
     @NotNull
-    Iterable<? extends IStoredLocale<?>> getSupportLocales();
-
-    @NotNull
     Category getCategory();
 
     int getPoints();

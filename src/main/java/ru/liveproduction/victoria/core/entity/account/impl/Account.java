@@ -4,6 +4,8 @@
 
 package ru.liveproduction.victoria.core.entity.account.impl;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.account.IAccount;
@@ -30,16 +32,19 @@ public class Account implements IAccount<String> {
     }
 
     @Id
+    @JsonIgnore
     @Column(unique = true, length = 80, nullable = false)
     private String login;
 
     @Column(unique = true, length = 80, nullable = false)
     private String viewName;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY,mappedBy = "account")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "account")
     Set<Token> tokens = new HashSet<>();
 
     @Column(nullable = false)
@@ -62,6 +67,7 @@ public class Account implements IAccount<String> {
 
     @Nullable
     @Override
+    @JsonIgnore
     public String getId() {
         return login;
     }

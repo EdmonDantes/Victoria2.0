@@ -6,6 +6,7 @@
 
 package ru.liveproduction.victoria.core.entity.localization.impl;
 
+import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 import ru.liveproduction.victoria.core.entity.localization.IStoredLocale;
@@ -20,12 +21,13 @@ import javax.persistence.Id;
  * Implementation of {@link IStoredLocale} which will saved to database
  */
 @Entity
+@Getter
 public class StoredLocale implements IStoredLocale<Integer> {
 
     public StoredLocale() {}
 
-    public StoredLocale(String javaLanguageTag) {
-        this.javaLanguageTag = javaLanguageTag;
+    public StoredLocale(String lang) {
+        this.lang = lang;
     }
 
     @Id
@@ -34,18 +36,7 @@ public class StoredLocale implements IStoredLocale<Integer> {
     private Integer id;
 
     @Column(nullable = false, unique = true, updatable = false, length = 34)
-    private String javaLanguageTag = "";
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    @NotNull
-    public String getJavaLanguageTag() {
-        return javaLanguageTag;
-    }
+    private String lang = "";
 
     @Override
     public boolean equals(Object o) {
@@ -54,11 +45,11 @@ public class StoredLocale implements IStoredLocale<Integer> {
 
         StoredLocale that = (StoredLocale) o;
 
-        return javaLanguageTag.equals(that.javaLanguageTag);
+        return lang.equals(that.lang);
     }
 
     @Override
     public int hashCode() {
-        return javaLanguageTag.hashCode();
+        return lang.hashCode();
     }
 }

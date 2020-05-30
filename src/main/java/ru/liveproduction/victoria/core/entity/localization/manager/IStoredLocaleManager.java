@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.annotation.Singleton;
 import ru.liveproduction.victoria.core.entity.localization.impl.StoredLocale;
 
+import java.util.List;
 import java.util.Set;
 
 @Singleton("stored-locale-manager")
@@ -24,6 +25,6 @@ public interface IStoredLocaleManager {
     StoredLocale save(@Nullable StoredLocale locale);
 
     @NotNull
-    Iterable<StoredLocale> getAllStoredLocales();
+    List<StoredLocale> getAllStoredLocales();
 
 }

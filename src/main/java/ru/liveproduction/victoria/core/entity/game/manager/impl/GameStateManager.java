@@ -11,6 +11,7 @@ import ru.liveproduction.victoria.core.annotation.Singleton;
 import ru.liveproduction.victoria.core.entity.account.impl.Account;
 import ru.liveproduction.victoria.core.entity.account.manager.IAccountManager;
 import ru.liveproduction.victoria.core.entity.game.impl.Game;
+import ru.liveproduction.victoria.core.entity.game.manager.IGameManager;
 import ru.liveproduction.victoria.core.entity.game.manager.IGameStateManager;
 import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 import ru.liveproduction.victoria.core.entity.questions.manager.IQuestionManager;
@@ -29,15 +30,25 @@ public class GameStateManager implements IGameStateManager {
 
     private IQuestionManager questionManager;
     private IAccountManager accountManager;
+    private IGameManager gameManager;
 
-    private Map<Integer, Thread> gameThreads = new TreeMap<>();
+    private Map<Integer, Thread> gameThreads = new ConcurrentHashMap<>();
     private Map<Integer, Queue<Action>> actions = new ConcurrentHashMap<>();
     private Map<Integer, Map<String, Integer>> gamePoints = new ConcurrentHashMap<>();
 
     @Autowired
-    public GameStateManager(IQuestionManager questionManager, IAccountManager accountManager) {
+    public void setQuestionManager(IQuestionManager questionManager) {
         this.questionManager = questionManager;
+    }
+
+    @Autowired
+    public void setAccountManager(IAccountManager accountManager) {
         this.accountManager = accountManager;
+    }
+
+    @Autowired
+    public void setGameManager(IGameManager gameManager) {
+        this.gameManager = gameManager;
     }
 
     @Override
@@ -199,6 +210,8 @@ public class GameStateManager implements IGameStateManager {
         for (Map.Entry<String, Integer> stringIntegerEntry : gamePoints.remove(game.getId()).entrySet()) {
             accountManager.addPoints(accountManager.getFromLogin(stringIntegerEntry.getKey()), stringIntegerEntry.getValue());
         }
+        game.setEndTime(System.currentTimeMillis());
+        gameManager.save(game);
     }
 
     private CompletableFuture createAction(Game game, int id) {

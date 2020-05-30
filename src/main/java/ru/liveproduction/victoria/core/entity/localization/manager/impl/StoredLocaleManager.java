@@ -11,6 +11,7 @@ import ru.liveproduction.victoria.core.entity.localization.repostiory.StoredLoca
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,13 +27,13 @@ public class StoredLocaleManager implements IStoredLocaleManager {
 
     @Override
     public void setUsingLocales(@NotNull String languageTag, @NotNull Set<StoredLocale> locales) {
-        this.locales.put(languageTag, locales);
+        this.locales.put(languageTag.toLowerCase(), locales);
     }
 
     @Override
     public void addUsingLocales(@NotNull String languageTag, @Nullable StoredLocale locale) {
         if (locale != null) {
-            this.locales.computeIfAbsent(languageTag, key -> new HashSet<>()).add(locale);
+            this.locales.computeIfAbsent(languageTag.toLowerCase(), key -> new HashSet<>()).add(locale);
         }
     }
 
@@ -42,40 +43,40 @@ public class StoredLocaleManager implements IStoredLocaleManager {
             return;
         }
 
-        locales.keySet().stream().filter(langKey -> locale.getJavaLanguageTag().startsWith(langKey)).forEach(langKey -> addUsingLocales(langKey, locale));
-        locales.computeIfAbsent(locale.getJavaLanguageTag(), key -> new HashSet<>()).add(locale);
+        locales.keySet().stream().filter(langKey -> locale.getLang().toLowerCase().startsWith(langKey.toLowerCase())).forEach(langKey-> addUsingLocales(langKey.toLowerCase(), locale));
+        locales.computeIfAbsent(locale.getLang().toLowerCase(), key -> new HashSet<>()).add(locale);
     }
 
     @Override
     @NotNull
     public Set<StoredLocale> getUsingLocales(@NotNull String languageTag) {
-        return this.locales.getOrDefault(languageTag, Collections.emptySet());
+        return this.locales.getOrDefault(languageTag.toLowerCase(), Collections.emptySet());
     }
 
     @Override
     @Nullable
     public StoredLocale getStoredLocaleFrom(@NotNull String languageTag) {
-        return storedLocaleRepository.getByJavaLanguageTagIgnoreCase(languageTag).orElse(null);
+        return storedLocaleRepository.getByLangIgnoreCase(languageTag.toLowerCase()).orElse(null);
     }
 
     @Override
     @Nullable
     public StoredLocale save(StoredLocale locale) {
-        if (storedLocaleRepository.getByJavaLanguageTagIgnoreCase(locale.getJavaLanguageTag()).isEmpty()) {
+        if (storedLocaleRepository.getByLangIgnoreCase(locale.getLang()).isEmpty()) {
             try {
                 var saved = storedLocaleRepository.save(locale);
 
                 addUsingLocale(saved);
                 return saved;
             } catch (Exception e) {
-                throw new RuntimeException("Can not save stored locale with language tag: " + locale.getJavaLanguageTag(), e);
+                throw new RuntimeException("Can not save stored locale with language tag: " + locale.getLang(), e);
             }
         }
         return null;
     }
 
     @Override
-    public @NotNull Iterable<StoredLocale> getAllStoredLocales() {
+    public @NotNull List<StoredLocale> getAllStoredLocales() {
         return storedLocaleRepository.findAll();
     }
 }

@@ -9,7 +9,9 @@ package ru.liveproduction.victoria.core.entity.localization;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
+import ru.liveproduction.victoria.core.entity.localization.impl.StoredLocale;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -25,24 +27,6 @@ public interface ILocalizationString<ID> {
     @Nullable
     ID getId();
 
-    /**
-     * Check localization string support this locale.
-     * @param locale
-     * @return True, if localization string support this locale.
-     */
-    boolean isSupport(@NotNull IStoredLocale locale);
-
-    /**
-     * @return all supports locales
-     */
     @NotNull
-    Set<? extends IStoredLocale<?>> getSupportLocale();
-
-    /**
-     * @param locale
-     * @return localization string for specific locale. Null if not support this locale.
-     */
-    @Nullable
-    String getLocaleString(@NotNull IStoredLocale locale);
-
+    Map<StoredLocale, String> getLocalStrings();
 }

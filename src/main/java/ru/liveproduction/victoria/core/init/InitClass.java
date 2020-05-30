@@ -35,7 +35,5 @@ public class InitClass implements ApplicationListener<ContextRefreshedEvent> {
         Stream.of(Locale.getAvailableLocales()).map(Locale::toLanguageTag).sorted(String::compareTo).forEach(langTag -> {
             storedLocaleManager.save(new StoredLocale(langTag));
         });
-
-        storedLocaleManager.getUsingLocales("ru-RU").stream().map(StoredLocale::getId).filter(Objects::nonNull).sorted(Integer::compareTo).forEach(System.out::println);
     }
 }

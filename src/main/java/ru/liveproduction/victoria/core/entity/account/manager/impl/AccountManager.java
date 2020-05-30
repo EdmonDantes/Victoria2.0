@@ -15,10 +15,12 @@ import ru.liveproduction.victoria.core.entity.account.manager.IAccountManager;
 import ru.liveproduction.victoria.core.entity.account.repository.AccountRepository;
 import ru.liveproduction.victoria.core.entity.account.repository.TokenRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton("account-manager")
+@Transactional
 public class AccountManager implements IAccountManager {
 
     private AccountRepository accountRepository;
@@ -32,24 +34,15 @@ public class AccountManager implements IAccountManager {
 
 
     @Override
+    @Transactional
     public @Nullable Account save(@NotNull Account account) {
-
-        List<Token> collect = account.getTokens().stream().filter(acc -> acc.getId() == null).collect(Collectors.toList());
-        account.setTokens(account.getTokens().stream().filter(acc -> acc.getId() != null).collect(Collectors.toSet()));
-
-        account = accountRepository.save(account);
-
-        for (Token token : collect) {
-            account.getTokens().add(token);
-        }
-
         return accountRepository.save(account);
     }
 
     @Override
     @Nullable
     public Token login(@NotNull String login, @NotNull String password) {
-        Account account = accountRepository.findById(login).orElse(null);
+        Account account = accountRepository.findById(login.toLowerCase()).orElse(null);
         if (account == null || !account.getPassword().equals(password)) {
             return null;
         }
@@ -60,6 +53,7 @@ public class AccountManager implements IAccountManager {
     }
 
     @Override
+    @Transactional
     public @Nullable Account addToken(@NotNull Account account, @NotNull Token token) {
         token.setAccount(account);
         account.getTokens().add(token);
@@ -78,7 +72,7 @@ public class AccountManager implements IAccountManager {
 
     @Override
     public @Nullable Account getFromLogin(@NotNull String login) {
-        return accountRepository.findById(login).orElse(null);
+        return accountRepository.findById(login.toLowerCase()).orElse(null);
     }
 
     @Override

@@ -38,19 +38,30 @@ public class CategoryManager implements ICategoryManager {
     }
 
     @Override
+    public @Nullable Category getById(int id) {
+        return categoryRepository.findById(id).orElse(null);
+    }
+
+    @Override
     @Nullable
     public String getName(@NotNull Category category, @NotNull String languageTag) {
-        return localizationStringManager.getLocaleString(category.getName(), languageTag);
+        if (category.getName() != null && category.getName().getId() != null) {
+            return localizationStringManager.getLocaleString(category.getName().getId(), languageTag);
+        }
+        return null;
     }
 
     @Override
     @Nullable
     public String getDescription(@NotNull Category category, @NotNull String languageTag) {
-        return localizationStringManager.getLocaleString(category.getDescription(), languageTag);
+        if (category.getDescription() != null && category.getDescription().getId() != null) {
+            return localizationStringManager.getLocaleString(category.getDescription().getId(), languageTag);
+        }
+        return null;
     }
 
     @Override
-    public @NotNull Iterable<Category> getAllCategories() {
+    public @NotNull List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 }

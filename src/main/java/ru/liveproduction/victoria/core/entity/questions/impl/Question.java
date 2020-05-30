@@ -6,6 +6,7 @@
 
 package ru.liveproduction.victoria.core.entity.questions.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,6 +49,7 @@ public class Question implements IQuestion<Integer> {
     private LocalizationString question;
 
     @OneToOne(optional = false, orphanRemoval = false, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JsonIgnore
     private LocalizationString answer;
 
     private int points = 0;
@@ -59,13 +61,6 @@ public class Question implements IQuestion<Integer> {
     @Override
     public Integer getId() {
         return id;
-    }
-
-    @Override
-    public @NotNull Iterable<? extends IStoredLocale<?>> getSupportLocales() {
-        Set<? extends IStoredLocale<?>> result = new HashSet<>(question.getSupportLocale());
-        result.retainAll(answer.getSupportLocale());
-        return result;
     }
 
     @Override

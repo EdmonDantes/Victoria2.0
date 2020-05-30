@@ -14,7 +14,10 @@ import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationStri
 import ru.liveproduction.victoria.core.entity.localization.impl.StoredLocale;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NegativeOrZero;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manager for {@link ILocalizationString}. For lazy loading and other complex operations.
@@ -33,9 +36,18 @@ public interface ILocalizationStringManager {
     LocalizationString save(@NotNull String ...args);
 
     @Nullable
-    @Transactional
-    String getLocaleString(@NotNull ILocalizationString<?> string, @NotNull StoredLocale storedLocale);
+    LocalizationString getById(@NotNull Integer localizationStringId);
 
     @Nullable
-    String getLocaleString(@NotNull ILocalizationString<?> string, @NotNull String languageTag);
+    String getLocaleString(@NotNull Integer localizationStringId, @NotNull StoredLocale storedLocale);
+
+    @Nullable
+    String getLocaleString(@NotNull Integer localizationStringId, @NotNull String languageTag);
+
+    @NotNull
+    @Transactional
+    Map<StoredLocale, String> getAllLocalizationString(int localizationStringId);
+
+    @NotNull
+    Set<StoredLocale> getSupportLocale(@NotNull Integer localizationStringId);
 }

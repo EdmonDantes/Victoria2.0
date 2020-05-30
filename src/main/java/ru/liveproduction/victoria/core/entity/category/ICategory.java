@@ -7,7 +7,7 @@ import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationStri
 
 public interface ICategory<ID> extends IdOwner<ID> {
 
-    @NotNull
+    @Nullable
     LocalizationString getName();
 
     @Nullable

@@ -6,6 +6,7 @@
 
 package ru.liveproduction.victoria.core.entity.pack.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,43 +52,21 @@ public class Pack implements IPack<Integer> {
     private LocalizationString description;
 
     @OneToOne(optional = true, orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    //FIXME: add price controller to project
+    @JsonIgnore
     private Price price;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Category> categories = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 
-    @Nullable
     @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
+    @JsonIgnore
     public @NotNull List<Question> getAllQuestions() {
         return questions;
-    }
-
-    @Override
-    public @NotNull LocalizationString getName() {
-        return name;
-    }
-
-    @Override
-    public @Nullable LocalizationString getDescription() {
-        return description;
-    }
-
-    @Override
-    public @Nullable Price getPrice() {
-        return price;
-    }
-
-    @Override
-    public @NotNull List<Category> getCategories() {
-        return categories;
     }
 
     @Override

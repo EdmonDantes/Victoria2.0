@@ -4,6 +4,7 @@
 
 package ru.liveproduction.victoria.core.entity.account.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.account.IToken;
@@ -27,12 +28,13 @@ public class Token implements IToken {
     @Id
     private String token;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private Account account;
 
 
     @Nullable
     @Override
+    @JsonIgnore
     public String getId() {
         return token;
     }

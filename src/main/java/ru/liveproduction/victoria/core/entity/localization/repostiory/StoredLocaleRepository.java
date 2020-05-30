@@ -21,6 +21,6 @@ import java.util.Optional;
 public interface StoredLocaleRepository extends JpaRepository<StoredLocale, Integer> {
 
     @NotNull
-    Optional<? extends StoredLocale> getByJavaLanguageTagIgnoreCase(String javaLanguageTag);
+    Optional<? extends StoredLocale> getByLangIgnoreCase(String lang);
 
 }

@@ -1,10 +1,14 @@
 package ru.liveproduction.victoria.core.entity.category.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.category.ICategory;
+import ru.liveproduction.victoria.core.entity.category.json.CategoryJsonDeserializer;
 import ru.liveproduction.victoria.core.entity.localization.impl.LocalizationString;
 
 import javax.persistence.CascadeType;
@@ -17,6 +21,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Data
+@JsonDeserialize(using = CategoryJsonDeserializer.class)
 public class Category implements ICategory<Integer> {
 
     public Category() {}
@@ -36,22 +41,6 @@ public class Category implements ICategory<Integer> {
 
     @OneToOne(optional = true, orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private LocalizationString description;
-
-    @Nullable
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public @NotNull LocalizationString getName() {
-        return name;
-    }
-
-    @Override
-    public @Nullable LocalizationString getDescription() {
-        return description;
-    }
 
     @Override
     public boolean equals(Object o) {

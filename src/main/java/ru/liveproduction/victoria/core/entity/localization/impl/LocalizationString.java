@@ -6,11 +6,16 @@
 
 package ru.liveproduction.victoria.core.entity.localization.impl;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.liveproduction.victoria.core.entity.localization.ILocalizationString;
 import ru.liveproduction.victoria.core.entity.localization.IStoredLocale;
+import ru.liveproduction.victoria.core.entity.localization.json.LocalizationStringJsonDeserializer;
+import ru.liveproduction.victoria.core.entity.localization.json.LocalizationStringJsonSerializer;
+import ru.liveproduction.victoria.core.entity.localization.repostiory.LocalizationStringRepository;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
@@ -27,6 +32,8 @@ import java.util.Set;
  * Implementation of {@link ILocalizationString} which will saved to database
  */
 @Entity
+@JsonDeserialize(using = LocalizationStringJsonDeserializer.class)
+@JsonSerialize(using = LocalizationStringJsonSerializer.class)
 public class LocalizationString implements ILocalizationString<Integer> {
 
     public LocalizationString(){}
@@ -60,18 +67,8 @@ public class LocalizationString implements ILocalizationString<Integer> {
     }
 
     @Override
-    public boolean isSupport(@NotNull IStoredLocale locale) {
-        return localizationString.containsKey(locale);
-    }
-
-    @Override
-    public @NotNull Set<? extends IStoredLocale<?>> getSupportLocale() {
-        return localizationString.keySet();
-    }
-
-    @Override
-    public @Nullable String getLocaleString(@NotNull IStoredLocale locale) {
-        return localizationString.get(locale);
+    public @NotNull Map<StoredLocale, String> getLocalStrings() {
+        return localizationString;
     }
 
     @Override
@@ -81,14 +78,11 @@ public class LocalizationString implements ILocalizationString<Integer> {
 
         LocalizationString string = (LocalizationString) o;
 
-        if (id != null ? !id.equals(string.id) : string.id != null) return false;
-        return localizationString.equals(string.localizationString);
+        return id != null ? id.equals(string.id) : string.id == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + localizationString.hashCode();
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }

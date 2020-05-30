@@ -25,5 +25,5 @@ public interface IStoredLocale<ID> {
      * @return Language tag in Java programming language.
      */
     @NotNull
-    String getJavaLanguageTag();
+    String getLang();
 }

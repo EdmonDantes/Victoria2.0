@@ -23,7 +23,11 @@ public interface IPackManager {
     @Nullable
     Pack save(@NotNull Pack pack);
 
-    boolean addQuestion(@NotNull Pack pack, @NotNull Question question);
+    @Nullable
+    Pack getById(@NotNull Integer packId);
+
+    @Transactional
+    boolean addQuestion(@NotNull Integer packId, @NotNull Integer questionId);
 
     @NotNull
     @Transactional
@@ -31,5 +35,8 @@ public interface IPackManager {
 
     @NotNull
     Map<Category, Set<Question>> getRandomQuestions(@NotNull Pack pack, int countCategories, int countQuestions);
+
+    @NotNull
+    List<Pack> getAllPacks();
 
 }

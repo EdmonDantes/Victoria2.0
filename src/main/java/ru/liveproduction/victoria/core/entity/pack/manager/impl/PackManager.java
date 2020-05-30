@@ -71,8 +71,17 @@ public class PackManager implements IPackManager {
     }
 
     @Override
-    public boolean addQuestion(@NotNull Pack pack, @NotNull Question question) {
-        if (pack.getCategories().contains(question.getCategory())) {
+    public @Nullable Pack getById(@NotNull Integer packId) {
+        return packRepository.findById(packId).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public boolean addQuestion(@NotNull Integer packId, @NotNull Integer questionId) {
+        Pack pack = getById(packId);
+        Question question = questionManager.getById(questionId);
+
+        if (pack != null && question != null && pack.getCategories().contains(question.getCategory())) {
             pack.getQuestions().add(question);
             return true;
         }
@@ -132,5 +141,10 @@ public class PackManager implements IPackManager {
         }
 
         return result;
+    }
+
+    @Override
+    public @NotNull List<Pack> getAllPacks() {
+        return packRepository.findAll();
     }
 }

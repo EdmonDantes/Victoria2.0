@@ -6,6 +6,8 @@
 
 package ru.liveproduction.victoria;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,7 @@ import ru.liveproduction.victoria.core.entity.pack.manager.IPackManager;
 import ru.liveproduction.victoria.core.entity.questions.impl.Question;
 import ru.liveproduction.victoria.core.entity.questions.manager.impl.QuestionManager;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -41,13 +44,13 @@ public class Test1 {
     public void testLocalizationString() {
         ILocalizationString<Integer> localizationString = manager.save("ru", "Привет", "en", "Hello");
 
-        Optional<? extends StoredLocale> ruLocale = repository.getByJavaLanguageTagIgnoreCase("ru");
+        Optional<? extends StoredLocale> ruLocale = repository.getByLangIgnoreCase("ru");
         Assert.assertTrue(ruLocale.isPresent());
-        Assert.assertEquals("Привет", manager.getLocaleString(localizationString, ruLocale.get()));
+        Assert.assertEquals("Привет", manager.getLocaleString(localizationString.getId(), ruLocale.get()));
 
-        var enLocale = repository.getByJavaLanguageTagIgnoreCase("en");
+        var enLocale = repository.getByLangIgnoreCase("en");
         Assert.assertTrue(enLocale.isPresent());
-        Assert.assertEquals("Hello", manager.getLocaleString(localizationString, enLocale.get()));
+        Assert.assertEquals("Hello", manager.getLocaleString(localizationString.getId(), enLocale.get()));
     }
 
     @Autowired
@@ -71,7 +74,7 @@ public class Test1 {
         question.setQuestion(new LocalizationString(Collections.singletonMap("en", "Test question")));
         question.setAnswer(manager.save("en", "Test answer"));
         question.setPoints(500);
-        Assert.assertTrue(packManager.addQuestion(pack, question));
+        Assert.assertTrue(packManager.addQuestion(pack.getId(), question.getId()));
 
         packManager.save(pack);
     }
